@@ -40,8 +40,8 @@ pipeline {
         stage('Deploy to kubernetes') {
             steps {
                 sh '''
-                kubectl set image deployment/web-app-deployment web-app=singhayush24/webapp:${IMAGE_TAG}
-                kubectl rollout status deployment/web-app-deployment
+                /usr/local/bin/kubectl set image deployment/web-app-deployment web-app=singhayush24/webapp:${IMAGE_TAG}
+                /usr/local/bin/kubectl rollout status deployment/web-app-deployment
                 '''
             }
         }
