@@ -28,12 +28,20 @@ pipeline {
                 '''
             }
         }
-        stage('Restart Docker Container') {
+        /*stage('Restart Docker Container') {
             steps {
                 sh '''
                 docker stop webapp || true
                 docker rm webapp || true
                 docker run -d --name webapp -p 80:80 singhayush24/webapp:${IMAGE_TAG}
+                '''
+            }
+        }*/
+        stage('Deploy to kubernetes') {
+            steps {
+                sh '''
+                kubectl set image deployment/web-app-deployment web-app=singhayush24/webapp:${IMAGE_TAG}
+                kubectl rollout status deployment/web-app-deployment
                 '''
             }
         }
