@@ -28,20 +28,22 @@ pipeline {
                 '''
             }
         }
-        /*stage('Restart Docker Container') {
-            steps {
-                sh '''
-                docker stop webapp || true
-                docker rm webapp || true
-                docker run -d --name webapp -p 80:80 singhayush24/webapp:${IMAGE_TAG}
-                '''
-            }
-        }*/
+        
         stage('Deploy to kubernetes') {
             steps {
                 sh '''
-                /usr/local/bin/kubectl set image deployment/web-app-deployment web-app=singhayush24/webapp:${IMAGE_TAG}
-                /usr/local/bin/kubectl rollout status deployment/web-app-deployment
+                KUBECTL="/mnt/c/Program Files/Docker/Docker/resources/bin/kubectl.exe"
+
+            "$KUBECTL" config current-context
+            "$KUBECTL" get nodes
+            "$KUBECTL" get pods -n nginxapp
+
+            "$KUBECTL" set image deployment/web-app-deployment \
+                web-app=singhayush24/webapp:2 \
+                -n nginxapp
+
+            "$KUBECTL" rollout status deployment/web-app-deployment \
+                -n nginxapp
                 '''
             }
         }
